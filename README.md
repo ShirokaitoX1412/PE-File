@@ -51,45 +51,19 @@
 - Section Entropy – sections với entropy cao thường chứa dữ liệu nén hoặc mã obfuscate.
 
 ## Hướng dẫn sử dụng
-- Clone repo:
-
-git clone https://github.com/ShirokaitoX1412/PE-File.git
-
+- Clone repo: git clone https://github.com/ShirokaitoX1412/PE-File.git
 Xác định file PE cần phân tích (ví dụ somefile.exe).
-
-Chạy tool — ví dụ:
-
-python pe_viewer.py somefile.exe
-
-
-Hoặc nếu dùng parser riêng:
-
-python pe_parser.py somefile.exe
-
-
-Xem thông tin header, section, import/export, metadata — để phục vụ phân tích tĩnh, kiểm tra suspicious API, unpack / detect packer, v.v.
+- Chạy tool — ví dụ: python pe_viewer.py somefile.exe (nếu dùng parser riêng:python pe_parser.py somefile.exe )
+- Xem thông tin header, section, import/export, metadata — để phục vụ phân tích tĩnh, kiểm tra suspicious API, unpack / detect packer, v.v.
 ## Ứng dụng & Mở rộng
-
-Repo này có thể được dùng / mở rộng cho các mục đích sau:
-
-Học về định dạng PE — hiểu rõ cấu trúc file thực thi Windows.
-
-Phân tích malware tĩnh — detect suspicious API, tìm dấu hiệu packer, obfuscation.
-
-Tool nền tảng để build công cụ nâng cao hơn: unpacker, PE sanitizer, scanner, compare/validate PE, export/import extractor, resource dumper, etc.
-
-Nghiên cứu / thực hành reverse engineering, malware analysis, forensic trên Windows PE.
+- Repo này có thể được dùng / mở rộng cho các mục đích sau:
++ Học về định dạng PE — hiểu rõ cấu trúc file thực thi Windows.
++ Phân tích malware tĩnh — detect suspicious API, tìm dấu hiệu packer, obfuscation.
++ Tool nền tảng để build công cụ nâng cao hơn: unpacker, PE sanitizer, scanner, compare/validate PE, export/import extractor, resource dumper, etc.
++ Nghiên cứu / thực hành reverse engineering, malware analysis, forensic trên Windows PE.
 
  ## Tài liệu tham khảo
+- Giới thiệu về cấu trúc PE file (DOS Header, NT Headers, Section Headers, Data Directory…) — bài viết “Cấu trúc file PE (Portable Executable)” trên AdminVietNam. 
+- Tổng quan về các section phổ biến, cách loader nạp PE vào memory, relocation, import/export, resource, … 
+- Vai trò của các table như Import, Export, Relocation, Resource, Debug, TLS… trong phân tích PE / malware analysis. 
 
-Giới thiệu về cấu trúc PE file (DOS Header, NT Headers, Section Headers, Data Directory…) — bài viết “Cấu trúc file PE (Portable Executable)” trên AdminVietNam. 
-Admin Viet Nam
-+1
-
-Tổng quan về các section phổ biến, cách loader nạp PE vào memory, relocation, import/export, resource, … 
-HackMD
-+1
-
-Vai trò của các table như Import, Export, Relocation, Resource, Debug, TLS… trong phân tích PE / malware analysis. 
-Antoan Thong Tin Hai Phong
-+1
