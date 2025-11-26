@@ -35,7 +35,7 @@ typedef struct _IMAGE_DOS_HEADER {
     LONG e_lfanew;     // Offset to PE header
 } IMAGE_DOS_HEADER;
 
-2. PE Signature
+###2. PE Signature
 
     Giá trị cố định: "PE\0\0" (50 45 00 00h).
 
