@@ -20,23 +20,3 @@ PE Header chứa tất cả thông tin cần thiết để hệ điều hành n�
 | **Section Table**   | Mô tả các section                                             |
 | **Sections**        | Thực tế dữ liệu (mã máy, dữ liệu, tài nguyên...)             |
 
----
-
-## III. Các thành phần chi tiết
-
-### 1. MS-DOS Header (64 bytes)
-
-**Chứa:**
-
-- Magic number: `MZ` (`0x4D5A`)
-- `e_lfanew` (offset `0x3C`) → trỏ tới PE Header
-
-```c
-typedef struct _IMAGE_DOS_HEADER { 
-    WORD e_magic;      // MZ = 0x5A4D
-    WORD e_cblp;       // Bytes on last page
-
-###2. PE Signature
-    ...
-    LONG e_lfanew;     // Offset to PE header
-} IMAGE_DOS_HEADER;
