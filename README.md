@@ -1,5 +1,4 @@
-### PE FILE 
-
+# PE FILE 
 ## I. Khái niệm PE (Portable Executable)
 - PE file là định dạng file được Windows sử dụng cho các file thực thi như .exe, .dll, .sys, .ocx...
 - PE Header chứa tất cả thông tin cần thiết để hệ điều hành nạp chương trình vào bộ nhớ và thực thi nó, bao gồm cấu trúc sections, entry point, và các dữ liệu quan trọng khác.
