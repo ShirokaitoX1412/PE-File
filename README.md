@@ -35,6 +35,8 @@ PE Header chứa tất cả thông tin cần thiết để hệ điều hành n�
 typedef struct _IMAGE_DOS_HEADER { 
     WORD e_magic;      // MZ = 0x5A4D
     WORD e_cblp;       // Bytes on last page
+
+###2. PE Signature
     ...
     LONG e_lfanew;     // Offset to PE header
 } IMAGE_DOS_HEADER;
