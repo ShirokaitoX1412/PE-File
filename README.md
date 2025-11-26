@@ -1,33 +1,28 @@
-# PE (Portable Executable) Format
+PE (Portable Executable) Format
+I. Khái niệm PE (Portable Executable)
 
-## I. Khái niệm PE (Portable Executable)
+PE file là định dạng file được Windows sử dụng cho các file thực thi như .exe, .dll, .sys, ...
 
-- **PE file** là định dạng file được Windows sử dụng cho các file thực thi như `.exe`, `.dll`, `.sys`, ...
-- **PE header** chứa tất cả thông tin cần thiết để hệ điều hành nạp chương trình vào bộ nhớ và thực thi nó.
+PE header chứa tất cả thông tin cần thiết để hệ điều hành nạp chương trình vào bộ nhớ và thực thi nó.
 
-### Thành phần PE Header
+Thành phần PE Header
+Thành phần	Mô tả
+1. MS-DOS Header	Phần header của chương trình DOS cũ (chủ yếu để tương thích)
+2. MS-DOS Stub	Một đoạn code in thông báo: "This program cannot be run in DOS mode."
+3. PE Signature	Dấu hiệu nhận diện file PE (4 bytes: 0x50 0x45 0x00 0x00)
+4. PE File Header	Thông tin cơ bản về file (số lượng sections, thời gian tạo, flags)
+5. Optional Header	Thông tin cần thiết để loader thực thi chương trình
+6. Section Table	Mô tả các section
+7. Sections	Thực tế dữ liệu (mã máy, dữ liệu, tài nguyên...)
+II. Các thành phần chi tiết
+1. MS-DOS Header (64 bytes)
 
-| Thành phần               | Mô tả                                                                                           |
-|--------------------------|------------------------------------------------------------------------------------------------|
-| **1. MS-DOS Header**      | Phần header của chương trình DOS cũ (chủ yếu để tương thích)                                    |
-| **2. MS-DOS Stub**        | Một đoạn code in thông báo kiểu: "This program cannot be run in DOS mode."                    |
-| **3. PE Signature**       | Dấu hiệu nhận diện file PE (4 bytes: `0x50 0x45 0x00 0x00`)                                  |
-| **4. PE File Header**     | Thông tin cơ bản về file (số lượng sections, thời gian tạo, flags)                            |
-| **5. Optional Header**    | Thông tin cần thiết để loader thực thi chương trình (entry point, base address, size...)      |
-| **6. Section Table**      | Mô tả các section (mã lệnh, dữ liệu, tài nguyên)                                              |
-| **7. Sections**           | Thực tế dữ liệu (mã máy, dữ liệu, tài nguyên...)                                               |
+Chứa:
 
----
+Magic number MZ (0x4D5A)
 
-## II. Các thành phần chi tiết
+e_lfanew (offset 0x3C) → trỏ tới PE Header
 
-### 1. MS-DOS Header (64 bytes)
-
-- **Chứa**:
-  - Magic number **MZ** (`0x4D5A`) – nhận diện file DOS.
-  - **e_lfanew** (offset `0x3C`): offset trỏ tới PE Header.
-
-```cpp
 typedef struct _IMAGE_DOS_HEADER { 
     WORD e_magic;      // MZ = 0x5A4D
     WORD e_cblp;       // Bytes on last page
@@ -35,9 +30,9 @@ typedef struct _IMAGE_DOS_HEADER {
     LONG e_lfanew;     // Offset to PE header
 } IMAGE_DOS_HEADER;
 
-###2. PE Signature
+2. PE Signature
 
-    Giá trị cố định: "PE\0\0" (50 45 00 00h).
+Giá trị cố định: "PE\0\0" (50 45 00 00h)
 
 3. COFF File Header (PE File Header)
 
@@ -50,14 +45,14 @@ typedef struct _IMAGE_FILE_HEADER {
     DWORD PointerToSymbolTable; // Không dùng trong file PE
     DWORD NumberOfSymbols;      // Không dùng trong file PE
     WORD  SizeOfOptionalHeader; // Kích thước của Optional Header
-    WORD  Characteristics;      // Các flag (file thực thi, DLL, 32-bit,…)
+    WORD  Characteristics;      // Các flag: EXE, DLL, 32-bit, ...
 } IMAGE_FILE_HEADER;
 
 Trường	Vai trò
-Machine	Xác định CPU (ví dụ: 0x14C = Intel 386)
+Machine	Xác định CPU (0x14C = Intel 386)
 NumberOfSections	Số lượng section
 TimeDateStamp	Thời gian file được tạo
-Characteristics	Cờ xác định loại file (executable, DLL, 32-bit,...)
+Characteristics	Cờ xác định loại file
 4. Optional Header
 
 (Rất quan trọng đối với loader.)
@@ -67,93 +62,84 @@ typedef struct _IMAGE_OPTIONAL_HEADER {
     BYTE MajorLinkerVersion;
     BYTE MinorLinkerVersion;
     DWORD SizeOfCode;
-    DWORD AddressOfEntryPoint;    // Entry Point (điểm bắt đầu thực thi)
+    DWORD AddressOfEntryPoint;    // Điểm bắt đầu thực thi
     DWORD BaseOfCode;
     DWORD BaseOfData;
     DWORD ImageBase;              // Địa chỉ load mặc định
-    DWORD SectionAlignment;       // Canh chỉnh section trong bộ nhớ
-    DWORD FileAlignment;          // Canh chỉnh section trong file
+    DWORD SectionAlignment;       // Căn chỉnh trong bộ nhớ
+    DWORD FileAlignment;          // Căn chỉnh trong file
     ...
-    IMAGE_DATA_DIRECTORY DataDirectory[16]; // Bảng các thành phần như Import, Export Table
+    IMAGE_DATA_DIRECTORY DataDirectory[16]; // Import, Export, Resource,...
 } IMAGE_OPTIONAL_HEADER32;
 
 Trường	Vai trò
 Magic	0x10B (PE32) hoặc 0x20B (PE32+)
-AddressOfEntryPoint	Địa chỉ hàm chính khi bắt đầu thực thi
-ImageBase	Địa chỉ cơ sở trong bộ nhớ (mặc định 0x400000 cho exe)
-SectionAlignment	Đơn vị căn chỉnh khi nạp vào RAM
-FileAlignment	Đơn vị căn chỉnh khi lưu file
-DataDirectory	Chứa địa chỉ Import table, Export table, Resource table
+AddressOfEntryPoint	Entry Point
+ImageBase	Địa chỉ cơ sở của image
+SectionAlignment	Căn chỉnh section trong RAM
+FileAlignment	Căn chỉnh section trong file
+DataDirectory	Bảng Import, Export, Resource,…
 5. Section Table (Section Headers)
-
-Mỗi section chứa thông tin như .text (code), .data (dữ liệu), .rdata (read-only data), .rsrc (resource).
-
 typedef struct _IMAGE_SECTION_HEADER {
-    BYTE Name[8];                   // Tên section (.text, .data,...)
-    DWORD VirtualSize;              // Kích thước khi load vào bộ nhớ
-    DWORD VirtualAddress;           // Địa chỉ ảo tương đối
-    DWORD SizeOfRawData;            // Kích thước trong file
-    DWORD PointerToRawData;         // Offset trong file
-    DWORD Characteristics;          // Quyền truy cập: đọc/ghi/thực thi
+    BYTE Name[8];
+    DWORD VirtualSize;
+    DWORD VirtualAddress;
+    DWORD SizeOfRawData;
+    DWORD PointerToRawData;
+    DWORD Characteristics;  // Quyền R/W/X
 } IMAGE_SECTION_HEADER;
 
-Ví dụ Section	Vai trò
-.text	Chứa mã lệnh (code)
-.data	Chứa dữ liệu có thể thay đổi
+Section	Vai trò
+.text	Mã lệnh
+.data	Dữ liệu có thể thay đổi
 .rdata	Dữ liệu chỉ đọc
-.rsrc	Tài nguyên (icon, ảnh, âm thanh)
-IV. Cách Windows Loader nạp chương trình
+.rsrc	Tài nguyên (icon, ảnh, ...)
+III. Cách Windows Loader nạp chương trình
 
-Khi một file PE được nạp:
+Windows xử lý PE như sau:
 
-    Đọc MS-DOS Header → tìm PE Header thông qua e_lfanew.
+Đọc MS-DOS Header → tìm offset e_lfanew
 
-    Xác nhận PE Signature ("PE\0\0").
+Xác nhận PE Signature "PE\0\0"
 
-    Đọc COFF File Header:
+Đọc COFF File Header → số section
 
-        Biết được số lượng sections.
+Đọc Optional Header, gồm:
 
-    Đọc Optional Header:
+ImageBase
 
-        ImageBase → nơi chương trình muốn được nạp.
+AddressOfEntryPoint
 
-        AddressOfEntryPoint → nơi thực thi đầu tiên.
+SectionAlignment, FileAlignment
 
-        SectionAlignment, FileAlignment → căn chỉnh bộ nhớ.
+DataDirectory → Import Table
 
-        Data Directory → tìm Import Table (các DLL cần load trước).
+Tạo vùng bộ nhớ tại ImageBase
 
-    Nạp các Sections:
+Nạp từng section
 
-        Tạo vùng bộ nhớ ảo tương ứng ImageBase.
+Xử lý Relocation nếu ImageBase thay đổi
 
-        Nạp từng section vào đúng địa chỉ ảo.
+Load DLL từ Import Table
 
-    Xử lý Relocation nếu cần:
+Nhảy đến EntryPoint để thực thi
 
-        Nếu ImageBase bị trùng, phải chỉnh sửa địa chỉ.
+IV. Các thành phần quan trọng cần lưu ý
 
-    Load các thư viện DLL được chỉ định trong Import Table.
+e_lfanew: Offset PE Header
 
-    Nhảy đến EntryPoint và bắt đầu thực thi chương trình.
+PE Signature: "PE\0\0"
 
-V. Các thành phần quan trọng cần lưu ý
+NumberOfSections
 
-    e_lfanew: Offset tới PE header.
+ImageBase
 
-    PE Signature: Xác nhận đây là file PE.
+AddressOfEntryPoint
 
-    NumberOfSections: Biết file có bao nhiêu section.
+DataDirectory (Import/Export/Resource/Relocation)
 
-    ImageBase: Địa chỉ file mong muốn trong bộ nhớ.
+Các section: .text, .data, .rdata, .rsrc
 
-    AddressOfEntryPoint: Địa chỉ bắt đầu thực thi.
+Relocation Table
 
-    DataDirectory: Thông tin Import/Export/Resource/Relocation Table.
-
-    .text, .data, .rdata, .rsrc: Các vùng dữ liệu chính.
-
-    Relocation Table: Khi ImageBase bị thay đổi phải sửa địa chỉ.
-
-    Import Table: Liệt kê DLLs và APIs cần thiết.
+Import Table
